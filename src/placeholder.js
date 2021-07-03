@@ -4,7 +4,7 @@
  * 作者主页：http://www.miaoqiyuan.cn/
  * 联系邮箱：mqycn@126.com
  * 使用说明：http://www.miaoqiyuan.cn/p/placeholder-js
- * 最新版本：http://git.oschina.net/mqycn/placeholder.js
+ * 最新版本：https://gitee.com/mqycn/placeholder.js
  */
 
 (function() {
@@ -29,67 +29,71 @@
                     return this;
                 },
                 //渲染
-                render: function(dom) {
-                    var text = dom.getAttribute('placeholder');
+                render: function(input) {
+                    var text = input.getAttribute('placeholder');
                     if (!!text) {
-                        this.attachEvent(dom, this.getDiv(dom, text));
+                        this.attachEvent(input, this.getPlaceholderDiv(input, text));
                     }
                 },
                 //设置样式
-                getDiv: function(dom, text) {
-                    var div = document.createElement('div');
+                getPlaceholderDiv: function(input, text) {
+                    var placeholderDiv = document.createElement('div');
 
-                    div.style.position = 'absolute';
-                    div.style.width = this.getPosition(dom, 'Width') + 'px';
-                    div.style.height = this.getPosition(dom, 'Height') + 'px';
-                    div.style.left = this.getPosition(dom, 'Left') + 'px';
-                    div.style.top = this.getPosition(dom, 'Top') + 'px';
-                    div.style.color = '#91D3F8';
-                    div.style.textIndent = '5px';
-                    div.style.zIndex = 999;
-                    div.style.background = dom.style.background;
-                    div.style.border = dom.style.border;
-                    div.style.cursor = 'text';
-                    div.innerHTML = text;
+                    placeholderDiv.style.position = 'absolute';
+                    placeholderDiv.style.width = this.getPosition(input, 'Width') + 'px';
+                    placeholderDiv.style.height = this.getPosition(input, 'Height') + 'px';
+                    placeholderDiv.style.left = this.getPosition(input, 'Left') + 'px';
+                    placeholderDiv.style.top = this.getPosition(input, 'Top') + 'px';
+                    placeholderDiv.style.color = '#91D3F8';
+                    placeholderDiv.style.textIndent = '5px';
+                    placeholderDiv.style.zIndex = 999;
+                    placeholderDiv.style.background = input.style.background;
+                    placeholderDiv.style.border = input.style.border;
+                    placeholderDiv.style.cursor = 'text';
+                    placeholderDiv.innerHTML = text;
 
-                    if ('TEXTAREA' == dom.tagName.toUpperCase()) {
-                        div.style.lineHeight = '35px';
+                    if ('TEXTAREA' == input.tagName.toUpperCase()) {
+                        placeholderDiv.style.lineHeight = '35px';
                     } else {
-                        div.style.lineHeight = div.style.height;
+                        placeholderDiv.style.lineHeight = placeholderDiv.style.height;
                     }
-                    document.getElementsByTagName('body')[0].appendChild(div);
-                    return div;
+                    document.getElementsByTagName('body')[0].appendChild(placeholderDiv);
+                    return placeholderDiv;
                 },
                 //计算当前输入项目的位置
-                getPosition: function(dom, name, parentDepth) {
+                getPosition: function(input, name, parentDepth) {
                     var offsetName = 'offset' + name;
-                    var offsetVal = dom[offsetName];
+                    var offsetVal = input[offsetName];
                     var parentDepth = parentDepth || 0;
                     if (!offsetVal && parentDepth < 3) {
-                        offsetVal = this.getPosition(dom.parentNode, name, ++parentDepth);
+                        offsetVal = this.getPosition(input.parentNode, name, ++parentDepth);
                     }
                     return offsetVal;
                 },
                 //添加事件
-                attachEvent: function(dom, div) {
+                attachEvent: function(input, placeholderDiv) {
 
                     //激活时，隐藏 placeholder
-                    dom[listenerName](listenerPrefix + 'focus', function() {
-                        div.style.display = 'none';
+                    input[listenerName](listenerPrefix + 'focus', function() {
+                        placeholderDiv.style.display = 'none';
                     });
 
                     //失去焦点时，隐藏 placeholder
-                    dom[listenerName](listenerPrefix + 'blur', function(e) {
+                    input[listenerName](listenerPrefix + 'blur', function(e) {
                         if (e.srcElement.value == '') {
-                            div.style.display = '';
+                            placeholderDiv.style.display = '';
                         }
                     });
 
                     //placeholder 点击时，对应的输入框激活
-                    div[listenerName](listenerPrefix + 'click', function(e) {
+                    placeholderDiv[listenerName](listenerPrefix + 'click', function(e) {
                         e.srcElement.style.display = 'none';
-                        dom.focus();
+                        input.focus();
                     });
+                    
+                    if( input.value !== '' ){
+                        placeholderDiv.style.display = 'none';
+                    }
                 },
 
             };
