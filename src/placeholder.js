@@ -42,8 +42,6 @@
                     placeholderDiv.style.position = 'absolute';
                     placeholderDiv.style.width = this.getPosition(input, 'Width') + 'px';
                     placeholderDiv.style.height = this.getPosition(input, 'Height') + 'px';
-                    placeholderDiv.style.left = this.getPosition(input, 'Left') + 'px';
-                    placeholderDiv.style.top = this.getPosition(input, 'Top') + 'px';
                     placeholderDiv.style.color = '#91D3F8';
                     placeholderDiv.style.textIndent = '5px';
                     placeholderDiv.style.zIndex = 999;
@@ -58,6 +56,17 @@
                         placeholderDiv.style.lineHeight = placeholderDiv.style.height;
                     }
                     document.getElementsByTagName('body')[0].appendChild(placeholderDiv);
+                    
+                    //窗口改变大小时自动调整位置
+                    placeholderDiv.resize = (function(that){
+                        return function(){
+                            placeholderDiv.style.left = that.getPosition(input, 'Left') + 'px';
+                            placeholderDiv.style.top = that.getPosition(input, 'Top') + 'px';
+                        }
+                    })(this);
+                    window[listenerName](listenerPrefix + 'resize', placeholderDiv.resize);
+                    placeholderDiv.resize();
+                    
                     return placeholderDiv;
                 },
                 //计算当前输入项目的位置
